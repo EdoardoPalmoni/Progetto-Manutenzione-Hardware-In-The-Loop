@@ -1,0 +1,10 @@
+config load "C:\Users\robyd\Desktop\UNIVPM\Manutenzione preventiva per la robotica e l'automazione intelligente\Progetto\MPRAI_Progetto\Controller_HIL\Controller_HIL.ioc"
+project toolchain STM32CubeIDE
+
+SetStructure Advanced
+
+project setCustomFWPath "C:\Users\robyd\STM32Cube\Repository\STM32Cube_FW_H7_V1.11.2"
+
+project generate 
+
+exit wait

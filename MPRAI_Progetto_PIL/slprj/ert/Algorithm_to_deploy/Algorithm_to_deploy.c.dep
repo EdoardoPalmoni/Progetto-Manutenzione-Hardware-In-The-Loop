@@ -1,0 +1,86 @@
+Algorithm_to_deploy.c.o: \
+ C:/Users/robyd/Desktop/UNIVPM/MANUTE~1/Progetto/MPRAI_~1/slprj/ert/Algorithm_to_deploy/Algorithm_to_deploy.c \
+ C:/Users/robyd/Desktop/UNIVPM/MANUTE~1/Progetto/MPRAI_~1/slprj/ert/Algorithm_to_deploy/Algorithm_to_deploy.h \
+ C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rtwtypes.h \
+ C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rt_nonfinite.h \
+ C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rtwtypes.h \
+ C:/Users/robyd/Desktop/UNIVPM/MANUTE~1/Progetto/MPRAI_~1/slprj/ert/Algorithm_to_deploy/Algorithm_to_deploy_types.h \
+ C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rtGetNaN.h \
+ C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rt_nonfinite.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/toolbox/target/supportpackages/arm_cortex_m_crl/crl/mw_cmsis.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_types.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis.instrset/CMSIS/Core/Include/cmsis_compiler.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis.instrset/CMSIS/Core/Include/cmsis_gcc.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_memory.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/none.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_types.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/utils.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/basic_math_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_memory.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/none.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/utils.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/interpolation_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/bayes_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/statistics_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/basic_math_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/fast_math_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/matrix_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/complex_math_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/statistics_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/controller_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/support_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/distance_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/matrix_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/svm_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/svm_defines.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/fast_math_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/transform_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/complex_math_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/filtering_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/support_functions.h \
+ C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/quaternion_math_functions.h \
+ C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rt_atan2f_snf.h \
+ C:/Users/robyd/Desktop/UNIVPM/MANUTE~1/Progetto/MPRAI_~1/slprj/ert/Algorithm_to_deploy/Algorithm_to_deploy_private.h
+C:/Users/robyd/Desktop/UNIVPM/MANUTE~1/Progetto/MPRAI_~1/slprj/ert/Algorithm_to_deploy/Algorithm_to_deploy.h:
+C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rtwtypes.h:
+C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rt_nonfinite.h:
+C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rtwtypes.h:
+C:/Users/robyd/Desktop/UNIVPM/MANUTE~1/Progetto/MPRAI_~1/slprj/ert/Algorithm_to_deploy/Algorithm_to_deploy_types.h:
+C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rtGetNaN.h:
+C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rt_nonfinite.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/toolbox/target/supportpackages/arm_cortex_m_crl/crl/mw_cmsis.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_types.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis.instrset/CMSIS/Core/Include/cmsis_compiler.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis.instrset/CMSIS/Core/Include/cmsis_gcc.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_memory.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/none.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_types.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/utils.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/basic_math_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/arm_math_memory.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/none.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/utils.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/interpolation_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/bayes_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/statistics_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/basic_math_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/fast_math_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/matrix_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/complex_math_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/statistics_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/controller_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/support_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/distance_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/matrix_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/svm_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/svm_defines.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/fast_math_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/transform_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/complex_math_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/filtering_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/support_functions.h:
+C:/ProgramData/MATLAB/SupportPackages/R2025b/3P.instrset/cmsis_dsp.instrset/Include/dsp/quaternion_math_functions.h:
+C:/Users/robyd/Desktop/UNIVPM/Manutenzione\ preventiva\ per\ la\ robotica\ e\ l'automazione\ intelligente/Progetto/MPRAI_Progetto/slprj/ert/_sharedutils/rt_atan2f_snf.h:
+C:/Users/robyd/Desktop/UNIVPM/MANUTE~1/Progetto/MPRAI_~1/slprj/ert/Algorithm_to_deploy/Algorithm_to_deploy_private.h:
