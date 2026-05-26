@@ -19,7 +19,25 @@ C_a = [eye(3),  zeros(3)];                      % 3x6
 % --- Verifica osservabilità ---
 assert(rank(obsv(A_a, C_a)) == 6, 'ERRORE: sistema non osservabile!');
 disp('FD-1: sistema OSSERVABILE ✓');
-
+%% Calcolo dei poli tramite LQG
+% R_weight = 0.01; 
+% R = R_weight * eye(size(C_a, 1));
+% 
+% Q_weight = 10; 
+% Q = Q_weight * eye(size(A_a, 1));
+% 
+% G = eye(size(A_a, 1));
+% 
+% [L_a, P_cov, Poles_LQG] = lqe(A_a, G, C_a, Q, R);
+% 
+% % 5. Stampa dei risultati nella Command Window
+% fprintf('\n--- RISULTATI OTTIMIZZAZIONE LQG (FD-1) ---\n');
+% disp('I poli ottimali scelti automaticamente sono:');
+% disp(Poles_LQG);
+% disp('La matrice di guadagno ottimale L_a è:');
+% disp(L_a);
+%%
+% POLI SCELTA INIZIALE 
 % --- Posizionamento poli osservatore ---
 % Poli del sistema: tutti in 0 (doppio integratore per ogni asse)
 % Poli osservatore: significativamente più veloci
@@ -29,43 +47,11 @@ disp('FD-1: sistema OSSERVABILE ✓');
 poles_FD1 = [-4, -5, -6, -8, -10, -12];
 
 L_a = place(A_a', C_a', poles_FD1)';  % 6x3
-
-%% ========================================================================
-%% AGGIORNAMENTO MATRICI PER COMPENSAZIONE GIROSCOPICA NON LINEARE (FD-1)
-%% ========================================================================
-% % Il vecchio ingresso era: u_old = [tau(3x1); Rpnoisy(3x1)]       -> (6x1)
-% % Il NUOVO ingresso sarà:  u_new = [tau(3x1); Rpnoisy(3x1); corr(3x1)] -> (9x1)
-% 
-% % 1. Recupera le matrici nominali dell'osservatore (già calcolate in precedenza)
-% % A_a (6x6), B_a (6x3), L_a (6x3)
-% A_obs_cl = A_a - L_a * C_a; % Matrice a ciclo chiuso dell'osservatore (6x6)
-% 
-% % 2. Definisci la matrice di accoppiamento per i 3 nuovi ingressi di correzione.
-% % La correzione agisce direttamente sulla derivata di omega (righe 4-6), 
-% % quindi la parte superiore è di zeri e quella inferiore è una matrice identità.
-% B_corr = [zeros(3,3); eye(3)]; % Dimensione: (6x3)
-% 
-% % 3. Assembla la nuova matrice B per lo State-Space (Orizzontale: 6 righe x 9 colonne)
-% % - Colonne 1-3: Coppie dei motori (B_a)
-% % - Colonne 4-6: Feedback degli angoli dai sensori (L_a)
-% % - Colonne 7-9: Termine di correzione non lineare (B_corr)
-% B_SS_FD1_new = [B_a, L_a, B_corr]; 
-% 
-% % 4. Aggiorna la matrice D per accogliere i 9 ingressi (6 righe x 9 colonne di zeri)
-% D_SS_FD1_new = zeros(6, 9);
-% 
-% % 5. Le matrici A e C rimangono strutturalmente identiche a prima
-% A_SS_FD1_new = A_obs_cl; % (6x6)
-% C_SS_FD1_new = eye(6);   % (6x6) -> Sputa fuori l'intero stato stimato
-% 
-% % 6. Salva o aggiorna il file .mat che Simulink caricherà all'avvio
-% save('FD_params.mat', 'B_SS_FD1_new', 'D_SS_FD1_new', 'A_SS_FD1_new', 'C_SS_FD1_new', '-append');
-% 
-% disp('=== Matrici FD-1 estese (6x9) generate e salvate con successo! ===');
-
-%%
-
-% --- Verifica stabilità ---
+%% POLI FAST
+% Poli molto veloci = segui la misura, ignora il modello
+% poles_FD1_fast = [-50, -60, -70, -100, -120, -140];
+% L_a = place(A_a', C_a', poles_FD1_fast)';
+%% --- Verifica stabilità ---
 A_obs_cl = A_a - L_a * C_a;
 ev = eig(A_obs_cl);
 fprintf('Autovalori osservatore FD-1:\n'); disp(ev');
@@ -154,3 +140,7 @@ C_SS_FD3 = eye(3);               % 3x3 (Uscita: la posizione stimata)
 D_SS_FD3 = zeros(3, 6);          % 3x6
 
 disp('Matrici FD-3 (Dead Reckoning per GPS) generate con successo!');
+
+%% Debounce logic
+
+T_debounce = 1.0;
