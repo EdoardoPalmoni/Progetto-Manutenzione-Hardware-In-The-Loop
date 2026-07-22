@@ -1,25 +1,5 @@
 # Progetto-Manutenzione-Hardware-In-The-Loop
 
-<div style="display: flex; flex-wrap: wrap; gap: 10px;">
-
-![version](https://img.shields.io/badge/version-1.0-blue.svg)
-
-![MATLAB](https://img.shields.io/badge/MATLAB-R2024b-orange?style=flat&logo=mathworks)
-![Simulink](https://img.shields.io/badge/Simulink-R2024b-orange?style=flat&logo=mathworks)
-![STM32](https://img.shields.io/badge/STM32-Nucleo--H723ZG-03234B?style=flat&logo=stmicroelectronics)
-
-<p align="center">
-    <a href="https://www.univpm.it/">
-<img src="Documents/logo_univpm.png" width=15% height=15%> </a>
-</p>
-
----
-
-| Version | Date       | Description                                              |
-| ------- | ---------- | -------------------------------------------------------- |
-| v1.0    | 2026-07-22 | Rilascio finale con moduli FD1, FD2, FD3 e validazione PIL |
-
----
 
 ## 📑 Indice
 
