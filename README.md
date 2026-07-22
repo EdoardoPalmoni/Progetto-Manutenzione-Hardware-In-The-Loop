@@ -281,11 +281,7 @@ Lanciare la simulazione premendo il pulsante ▶️ **Run** nella toolbar di Sim
 sim('Simulation')
 ```
 
-Al termine della simulazione, per generare i grafici dei risultati:
-
-```matlab
-PlotGraphs
-```
+Al termine della simulazione, per generare i grafici utilizzare il Tool **Simulation Data Inspector** 
 
 ---
 
