@@ -14,7 +14,7 @@ WrenchType = 6;                 % 1. No Wrench
                                 % 6.1 Type #2 of low frequency signal + high frequency signal
                                 % 6.2 Type #3 of low frequency signal + high frequency signal
 
-ReferenceTypeNumber = 4;        % 0. Null trajectory
+ReferenceTypeNumber = 0;        % 0. Null trajectory
                                 % 1. Constant speed in direction of xE
                                 % 2. Constant speed in direction of yE
                                 % 3. Constant speed in direction of -zE
