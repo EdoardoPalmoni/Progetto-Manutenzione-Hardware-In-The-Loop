@@ -83,25 +83,136 @@ fprintf('\nMatrice L_a (guadagno osservatore):\n'); disp(L_a);
 %
 % Guasto motore → sum(fi) cambia → r_act_z ≠ 0
 
-g_vec       = [0; 0; g];    % 3x1 vettore gravità NED
-B_parity    = F1 / m;       % 3x6: guadagno motori nel residuo
+% g_vec       = [0; 0; g];    % 3x1 vettore gravità NED
+% B_parity    = F1 / m;       % 3x6: guadagno motori nel residuo
+% 
+% % Verifica con F1 del workspace (riga 3 = [-1,-1,-1,-1,-1,-1])
+% disp('Verifica F1 riga 3 (atteso: tutti -1):');
+% disp(F1(3,:));
+% disp('B_parity riga 3 (atteso: tutti -1/m = -0.6452):');
+% disp(B_parity(3,:));
+% 
+% % Per residuo torque (opzionale, richiede derivata filtrata di omeganoisy):
+% %   r_tau = omegadot_filtered - inv(J)*F2*u
+% %   Implementato in Simulink con blocco Derivative + filtro
+% 
+% B_torque_parity = inv(J) * F2;  % 3x6
+% tau_filt_TC     = 0.05;          % costante di tempo filtro derivativo [s]
+% 
+% fprintf('\nB_parity (F1/m):\n'); disp(B_parity);
+% fprintf('B_torque_parity (inv(J)*F2):\n'); disp(B_torque_parity);
+%% ================================================================
+%% MODULO FD-2: Unknown Input Observer (UIO) per Guasto Attuatori
+%% Implementazione per blocco State-Space (u = 6 motori, y = Z_pos, Z_vel)
+%% ================================================================
+% disp('--- Inizializzazione UIO FD-2 (MIMO Version) ---');
+% 
+% % Estraiamo la riga della matrice F1 relativa all'asse Z
+% % NOTA: Se nel tuo workspace la spinta verticale è mappata sulla riga 1 
+% % anziché sulla 3, cambia F1(3,:) in F1(1,:)
+% F1_Z = F1(3, :); % Vettore 1x6
+% 
+% % 1. Definizione del modello nello Spazio di Stato (Asse Z)
+% % x = [z; v_z]
+% A_2 = [0, 1; 
+%        0, 0];                     
+% 
+% % Matrice di ingresso B_2 (dimensione 2x6)
+% B_2 = [zeros(1, 6); 
+%        F1_Z / m];                 
+% 
+% E_2 = [0; 
+%        1/m];                      % Effetto del disturbo (Vento su asse Z)
+% 
+% % Il guasto è sul motore 1 (f1), quindi prendiamo il 1° elemento di F1_Z
+% F_2 = [0; 
+%        F1_Z(1) / m];              
+% 
+% C_2 = [1, 0; 
+%        0, 1];                     % Misure: posizione e velocità Z
+% 
+% % 2. Calcolo Matrici UIO (Deaccoppiamento)
+% H_2 = E_2 * pinv(C_2 * E_2); 
+% 
+% % Verifica matematica del deaccoppiamento
+% I_mat = eye(size(A_2));
+% if max(abs((I_mat - H_2 * C_2) * E_2)) > 1e-10
+%     error('FD-2: Condizione di deaccoppiamento fallita!');
+% end
+% 
+% % Calcolo G_2 (che ora sarà automaticamente 2x6) e A_soluzione
+% G_2 = (I_mat - H_2 * C_2) * B_2;
+% A_soluzione = (I_mat - H_2 * C_2) * A_2;
+% 
+% % 3. Posizionamento dei Poli 
+% poli_desiderati = [-10, -15]; 
+% L1_2 = place(A_soluzione', C_2', poli_desiderati)';
+% 
+% N_2 = A_soluzione - L1_2 * C_2;
+% L_2 = L1_2 + N_2 * H_2;
+% 
+% % ================================================================
+% % 4. ADATTAMENTO PER BLOCCO STATE-SPACE SIMULINK
+% % Ingresso totale Simulink = [f1..f6; z_meas; vz_meas] -> Vettore 8x1
+% % Uscita totale Simulink = x_hat -> Vettore 2x1
+% % ================================================================
+% 
+% A_ss_2 = N_2;                            % 2x2
+% B_ss_2 = [G_2, L_2];                     % G(2x6) affiancato a L(2x2) -> 2x8
+% C_ss_2 = eye(size(N_2));                 % 2x2
+% D_ss_2 = [zeros(size(G_2)), H_2];        % Zeri(2x6) affiancati a H(2x2) -> 2x8
+% 
+% disp('Matrici State-Space UIO FD-2 calcolate con successo (Dimensione B: 2x8) ✓');
+%% ================================================================
+%% MODULO FD-2: Fault Detection Attuatori (Firma Multi-Asse DOBC)
+%% ================================================================
+% disp('--- Inizializzazione FD-2: Analisi Firma Multi-Asse ---');
+% 
+% % Estraiamo i coefficienti di Rollio e Beccheggio per il Motore 1
+% % Dalla matrice di allocazione dei momenti F2 (3 righe x 6 motori)
+% % Riga 1: Rollio, Riga 2: Beccheggio, Colonna 1: Motore 1
+% K_roll  = F2(1, 1);   % = 0
+% K_pitch = F2(2, 1);   % = 0.2750
+% K_yaw   = F2(3, 1);   % = 0.7108
+% 
+% sig_motor1 = F2(:, 1)';   % [0; 0.2750; 0.7108]
+% 
+% % (Opzionale) Calcolo l'ampiezza attesa del residuo per impostare la soglia.
+% % Se il guasto inietta una perdita di -0.51 N (Delta f):
+% % Il residuo teorico sarà = (K_roll^2 + K_pitch^2) * abs(Delta_f)
+% Delta_f_atteso = 0.51; 
+% ampiezza_gradino_teorica = (K_roll^2 + K_pitch^2) * Delta_f_atteso;
+% 
+% disp(['Coefficiente K_roll: ', num2str(K_roll)]);
+% disp(['Coefficiente K_pitch: ', num2str(K_pitch)]);
+% disp(['Ampiezza teorica del gradino al momento del guasto: ', num2str(ampiezza_gradino_teorica)]);
+% disp('FD-2 pronto per Simulink ✓');
+%% FD-2: Residui strutturati a 6 canali (un canale per motore)
+sig_all_T = F2';   % [6×3] — riga i = firma motore i = F2(:,i)'
 
-% Verifica con F1 del workspace (riga 3 = [-1,-1,-1,-1,-1,-1])
-disp('Verifica F1 riga 3 (atteso: tutti -1):');
-disp(F1(3,:));
-disp('B_parity riga 3 (atteso: tutti -1/m = -0.6452):');
-disp(B_parity(3,:));
+% Verifica dimensioni
+fprintf('sig_all_T: %dx%d\n', size(sig_all_T));
+% Deve stampare: 6x3
 
-% Per residuo torque (opzionale, richiede derivata filtrata di omeganoisy):
-%   r_tau = omegadot_filtered - inv(J)*F2*u
-%   Implementato in Simulink con blocco Derivative + filtro
+% Ogni riga proiettata su Me_B_hat (3×1) dà r_i scalare
+% sig_all_T * Me_B_hat = [6×3] × [3×1] = [6×1] ✓
 
-B_torque_parity = inv(J) * F2;  % 3x6
-tau_filt_TC     = 0.05;          % costante di tempo filtro derivativo [s]
+% Filtro LPF per detrending — State-Space a blocchi 6×6
+tau_base = 40;
+A_lp6 = -(1/tau_base) * eye(6);   % 6×6
+B_lp6 =  (1/tau_base) * eye(6);   % 6×6
+C_lp6 =  eye(6);                   % 6×6
+D_lp6 =  zeros(6);                 % 6×6
 
-fprintf('\nB_parity (F1/m):\n'); disp(B_parity);
-fprintf('B_torque_parity (inv(J)*F2):\n'); disp(B_torque_parity);
+fprintf('Matrici LPF 6-canali configurate ✓\n');
 
+%% Calibrazione soglie — DOPO run fault-free (t > 15s)
+% (eseguire dopo simulazione)
+% idx = t > 15;
+% r_det6_base = r_det6.Data(idx, :);   % N×6
+% mu6    = mean(r_det6_base, 1);        % 1×6
+% sigma6 = std(r_det6_base, 0, 1);      % 1×6
+% Th_FD2_6ch = mu6 - 3*sigma6;          % 1×6 — soglie negative per ogni motore
 %% ================================================================
 %% Salva parametri per Simulink
 %% ================================================================
