@@ -30,9 +30,12 @@
    2. [Software](#software)
 4. [Configurazioni Pre-Run](#pre-run-configuration)
    1. [Environment Setup](#setup)
-5. [Esempi di esecuzione](#usage)
-   1. [Simulazione MIL](#run-mil)
-   2. [Simulazione PIL](#run-pil)
+5. [Guida all'esecuzione](#usage)
+   1. [Step 1 — Inizializzazione del workspace](#step1)
+   2. [Step 2 — Caricamento dei dati di calibrazione](#step2)
+   3. [Step 3 — Calibrazione delle soglie diagnostiche](#step3)
+   4. [Step 4 — Apertura del modello Simulink](#step4)
+   5. [Step 5 — Selezione del guasto e avvio della simulazione](#step5)
 6. [Legal](#legal)
    1. [Credits](#credits)
    2. [License](#license)
@@ -162,40 +165,127 @@ Progetto-Manutenzione-Hardware-In-The-Loop/
 
 ---
 
-## ▶️ Esempi di esecuzione <a name="usage"></a>
+## ▶️ Guida all'esecuzione <a name="usage"></a>
 
-### Simulazione MIL <a name="run-mil"></a>
+Di seguito sono descritti, nell'ordine corretto, tutti i passaggi necessari per configurare l'ambiente, calibrare le soglie diagnostiche e lanciare una simulazione con o senza guasto.
 
-1. Aprire MATLAB e navigare nella cartella `MPRAI_Progetto_MIL/`
-2. Eseguire lo script principale:
-   ```matlab
-   Main
-   ```
-3. Il modello `Simulation.slx` si apre e carica automaticamente tutti i parametri
-4. Lanciare la simulazione dalla GUI di Simulink oppure da terminale MATLAB:
-   ```matlab
-   FD1_FD2_FD3           % Calcola le matrici dei moduli di Fault Detection
-   Calcolo_soglie_residui % Calibra le soglie (richiede i file .mat di riferimento)
-   sim('Simulation')      % Lancia la simulazione
-   PlotGraphs             % Genera i grafici dei risultati
-   ```
+> **Nota**: tutti i comandi vanno eseguiti nella *Command Window* di MATLAB, con la cartella `MPRAI_Progetto_MIL/` impostata come *Current Folder*.
 
-### Simulazione PIL <a name="run-pil"></a>
+---
 
-1. Collegare la scheda STM32 Nucleo-H723ZG al PC via USB
-2. Aprire MATLAB e navigare nella cartella `MPRAI_Progetto_PIL/`
-3. Eseguire:
-   ```matlab
-   Main
-   ```
-4. Nel modello `Simulation.slx`, il blocco controllore è configurato in modalità PIL:
-   - Simulink compila automaticamente il codice C per il target ARM
-   - Il firmware viene flashato sulla scheda
-   - La simulazione avviene con il controllore in esecuzione sull'hardware reale
-5. Per il confronto MIL vs PIL, utilizzare il *Simulation Data Inspector* oppure:
-   ```matlab
-   PlotComparisonGraphs
-   ```
+### Step 1 — Inizializzazione del workspace <a name="step1"></a>
+
+Eseguire in sequenza i due script seguenti:
+
+```matlab
+Main
+FD1_FD2_FD3
+```
+
+- **`Main.m`** pulisce il workspace (`clear all`), aggiunge al path le sotto-cartelle `bin/` e `bin/misc/`, e carica nel workspace tutte le variabili necessarie alla simulazione:
+  - *Parametri di simulazione* (tempo finale, passo di campionamento, tipo di traiettoria, tipo di disturbo, flag di attacco) tramite `SimulationParameters.m`.
+  - *Parametri del controllore DOBC* (guadagni NDO, poli dell'osservatore di disturbo) tramite `ControllerParameters.m`.
+  - *Parametri del plant* (massa `m`, matrice di inerzia `J`, matrici di allocazione `F1` e `F2`) tramite `PlantParameters.m`.
+
+- **`FD1_FD2_FD3.m`** utilizza le variabili appena caricate (in particolare `F1`, `F2`, `J`, `m`, `Ts`, `omega0`, `p0`) per calcolare le matrici *State-Space* dei tre moduli di Fault Detection:
+  - **FD-1**: matrice di stato ad anello chiuso dell'osservatore di Luenberger (`A_SS_FD1`), matrice di ingresso composita (`B_SS_FD1`), identità in uscita e condizioni iniziali.
+  - **FD-2**: matrice di proiezione $F_2^T$ per i residui strutturati a 6 canali e matrici del filtro washout (LPF diagonale $6\times6$ con $\tau = 40$ s).
+  - **FD-3**: matrici del filtro complementare per il GPS con guadagno $K_{comp} = 0{,}05$ e condizioni iniziali.
+
+Al termine di questo step, tutte le variabili richieste dal modello Simulink sono presenti nel workspace.
+
+---
+
+### Step 2 — Caricamento dei dati di calibrazione <a name="step2"></a>
+
+Caricare nel workspace i tre file `.mat` contenenti i dati dei residui acquisiti in una precedente simulazione **fault-free** (senza guasto). Questi dati servono come *baseline* statistica per il calcolo delle soglie.
+
+Dalla *Command Window* di MATLAB:
+
+```matlab
+load('r_gyro_norm.mat')    % Norma del residuo FD-1 (giroscopio) in condizioni nominali
+load('r_gps_norm.mat')     % Norma del residuo FD-3 (GPS) in condizioni nominali
+load('r_det6.mat')         % Residui detrended FD-2 (6 canali, uno per motore) in condizioni nominali
+```
+
+In alternativa, è possibile fare doppio clic sui file `.mat` direttamente dal pannello *Current Folder* di MATLAB.
+
+> **Nota**: questi file sono già forniti nel repository e contengono i dati di una simulazione fault-free di riferimento (traiettoria a spirale ascendente, 300 s, disturbi di tipo 6). Se si desidera ricalcolarli con parametri diversi, è sufficiente eseguire una simulazione senza guasto (`Attack = 0` in `SimulationParameters.m`) e salvare manualmente le variabili `r_gyro_norm`, `r_gps_norm` e `r_det6` dal workspace.
+
+---
+
+### Step 3 — Calibrazione delle soglie diagnostiche <a name="step3"></a>
+
+Eseguire lo script di calibrazione:
+
+```matlab
+Calcolo_soglie_residui
+```
+
+Questo script analizza statisticamente i dati di baseline caricati allo Step 2 e calcola le soglie di allarme secondo la **regola del 3-sigma** ($\mu \pm 3\sigma$):
+
+| Modulo | Variabile soglia | Descrizione |
+|--------|-----------------|-------------|
+| **FD-1** | `Th_3sigma_gyro` | Soglia positiva sulla norma del residuo del giroscopio |
+| **FD-2** | `Th_m1` ... `Th_m6` | 6 soglie negative (una per motore) sui residui strutturati detrended |
+| **FD-3** | `Th_3sigma_gps` | Soglia positiva sulla norma del residuo GPS |
+
+Al termine dell'esecuzione, la *Command Window* stampa un riepilogo con media, deviazione standard e soglia calcolata per ciascun modulo. Le variabili soglia vengono salvate nel workspace e saranno lette automaticamente dai blocchi *Compare to Constant* presenti nel modello Simulink.
+
+---
+
+### Step 4 — Apertura del modello Simulink <a name="step4"></a>
+
+Aprire il modello di simulazione:
+
+```matlab
+open_system('Simulation')
+```
+
+Oppure fare doppio clic sul file `Simulation.slx` dal pannello *Current Folder*. Il modello contiene:
+
+- Il **plant** del drone (blocco protetto `Drone_System`), con la dinamica a 6 GDL del corpo rigido e i sensori rumorosi.
+- Il **controllore DOBC** con gli osservatori di disturbo NDO per forze e coppie.
+- I **tre moduli di Fault Detection** (FD-1, FD-2, FD-3) implementati come blocchi *State-Space*.
+- Il blocco **Evaluator** con le logiche di sogliatura, debounce e isolamento.
+- I **sottosistemi di iniezione guasti** per giroscopio, GPS e attuatori, ciascuno dotato di *Manual Switch* per l'abilitazione selettiva.
+
+---
+
+### Step 5 — Selezione del guasto e avvio della simulazione <a name="step5"></a>
+
+Prima di lanciare la simulazione, scegliere lo scenario di guasto desiderato:
+
+#### Guasto al giroscopio (FD-1)
+1. Navigare nel sottosistema di iniezione guasti sul giroscopio.
+2. Commutare il *Manual Switch* sull'asse desiderato (Roll, Pitch o Yaw) dalla posizione *nominale* alla posizione *guasto*.
+3. Verificare i parametri del blocco *Ramp*: slope = `0.01`, start time = `Attack_Time`, saturazione = `±5 rad/s`.
+
+#### Guasto agli attuatori (FD-2)
+1. Navigare nel sottosistema di iniezione guasti sui motori.
+2. Commutare il *Manual Switch* del motore desiderato ($f_1$ ... $f_6$).
+3. Verificare i parametri del blocco *Step*: step time = `Attack_Time`, valore finale = fattore di perdita di efficacia (es. `0.8` per una perdita del 20%).
+
+#### Guasto al GPS (FD-3)
+1. Navigare nel sottosistema di iniezione guasti sul GPS.
+2. Commutare il *Manual Switch* sull'asse desiderato ($x$, $y$ o $z$).
+3. Verificare i parametri del blocco *Ramp*: slope = `0.02`, start time = `Attack_Time`, saturazione = `±5 m`.
+
+#### Simulazione fault-free
+Per una simulazione senza guasti (utile per verificare l'assenza di falsi allarmi), assicurarsi che tutti i *Manual Switch* siano nella posizione *nominale* e che `Attack = 0` in `SimulationParameters.m`.
+
+#### Avvio
+Lanciare la simulazione premendo il pulsante ▶️ **Run** nella toolbar di Simulink, oppure da terminale:
+
+```matlab
+sim('Simulation')
+```
+
+Al termine della simulazione, per generare i grafici dei risultati:
+
+```matlab
+PlotGraphs
+```
 
 ---
 
